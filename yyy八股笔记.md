@@ -319,7 +319,7 @@ recover可以终止panic造成的程序崩溃。由于recover必须在panic之�
 
 **线程由CPU调度，是抢占式的；协程由用户态调度，是协作式的，一个协程让出CPU后，才执行下一个协程。**
 
-![image-20231115190539679](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231115190539679.png)
+![image-20231115190539679](./image/image-20231115190539679.png)
 
 用户级线程模型：M：1；内核级线程模型：1：1；混合型线程模型：M：N
 
@@ -344,7 +344,7 @@ go func() {}
 
 #### goroutine状态变化
 
-![image-20231116205638289](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231116205638289.png)
+![image-20231116205638289](./image/image-20231116205638289.png)
 
 ### goroutine调度机制
 
@@ -365,11 +365,11 @@ GMP调度流程大致如下：
 - 拿到可运行的G后，M就运行G。当前G执行后，M会从P获取下一个G，不断重复下去。
   - 若当前G需要执行系统调用，M就会带着这个G进行系统调用。此时若有别的M空闲，就会接手原来M的P继续执行剩下的G。当系统调用执行完后，原来的M会观察是否有P可以连接，没有就返回线程池睡眠。因此，**为了让P尽可能地一直有M连接，M数量一般要稍大于P**。
 
-![image-20231115194325979](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231115194325979.png)
+![image-20231115194325979](./image/image-20231115194325979.png)
 
 #### 调度的生命周期
 
-![image-20231115200042768](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231115200042768.png)
+![image-20231115200042768](./image/image-20231115200042768.png)
 
 - m0是启动程序后编号为0的主线程，实例位于全局变量`runtime.m0`，不需要在heap上分配。m0负责执行初始化操作和启动第一个G，之后和其他M一样。
 - g0是每次启动一个M都会第一个创建的goroutine，不由用户代码创建，而是go运行时内部创建管理。对于每一个M，**g0负责执行运行时调度和系统调度相关的操作。当一个G要进行系统调度或者运行时调度(如goroutine的创建和切换)时，就会切换至g0，使用g0的栈空间完成调度操作**，这样可以避免在自己栈上产生额外的负担。全局变量`runtime.g0`指的是m0的g0.
@@ -444,7 +444,7 @@ type hchan struct {
 
 图解如下
 
-![image-20231117170844690](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231117170844690.png)
+![image-20231117170844690](./image/image-20231117170844690.png)
 
 主要有以下四个部分：
 
@@ -603,7 +603,7 @@ type Mutex struct {
 
 Mute下内存布局如下：
 
-![image-20231118205920400](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231118205920400.png)
+![image-20231118205920400](./image/image-20231118205920400.png)
 
 - Waiter：表示阻塞等待该锁的协程个数。根据这个字段判断是否需要释放信号量。
 - Starving：表示该锁是否处于饥饿状态，0不在1在，1说明有协程等待超过1ms
@@ -755,7 +755,7 @@ type WaitGroup struct {
 
 state1里面有三个部分：counter、waiter和semaphore。counter和waiter是两个计数器，组成state；semaphore是信号量
 
-![image-20231119210404560](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231119210404560.png)
+![image-20231119210404560](./image/image-20231119210404560.png)
 
 - counter：该goroutine组内当前未执行结束的goroutine个数
 - waiter：等待该goroutine组完成的goroutine个数
@@ -865,7 +865,7 @@ type Map struct {
 
 sync.Map主要提供了以下方法：
 
-![image-20231119224106755](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231119224106755.png)
+![image-20231119224106755](./image/image-20231119224106755.png)
 
 ### 原子操作
 
@@ -957,7 +957,7 @@ context包定义了公用的emptyCtx全局变量background，可以用Background
 
 四种方法以及三种context的依赖关系如图：
 
-![image-20231119231941058](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231119231941058.png)
+![image-20231119231941058](./image/image-20231119231941058.png)
 
 - 
 
@@ -1361,7 +1361,7 @@ Redundant主要用于MySQL 5.0之前，由于其不是一种紧凑的格式，�
 
 #### Compact行格式
 
-![image-20231113223535513](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231113223535513.png)
+![image-20231113223535513](./image/image-20231113223535513.png)
 
 ##### 记录的额外信息
 
@@ -1473,7 +1473,7 @@ B+树索引是MySQL存储引擎采用最多的索引类型。
 
 B+树是多叉树。其中叶子节点存放数据，分叶子节点只存放索引，每个节点里的数据按照主键顺序存放。每一层父节点的索引值都会出现在其子节点的索引值中，因此叶子节点中包含了所有索引值信息。夜子姐带你还有两个指针，分别指向上一个叶子节点和下一个叶子节点，形成一个双向链表。
 
-![image-20231121132328484](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231121132328484.png)
+![image-20231121132328484](./image/image-20231121132328484.png)
 
 ##### 通过主键索引查询数据
 
@@ -1497,7 +1497,7 @@ B+树一般只有3-4层高度存储千万数据，也就是3-4次IO就可以查�
 
 二级索引和主键索引主要的区别是：**主键索引的叶子节点存放的是整个实际数据，而二级索引的叶子节点存放的是主键值**。因此使用二级索引查询我们需要**回表，**也就是查到主键后用主键索引再查一次数据。所以使用二级索引需要查两次B+树，大概图解如下：
 
-![image-20231121134901979](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231121134901979.png)
+![image-20231121134901979](./image/image-20231121134901979.png)
 
 不过，若查询的数据是能在二级索引的B+树里叶子节点查到的，如主键，就不需要回表了。例如：
 
@@ -1618,7 +1618,7 @@ CREATE INDEX index_product_no_name ON product(product_no, name);
 
 联合索引B+树示意图如下：
 
-![image-20231203164803992](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231203164803992.png)
+![image-20231203164803992](./image/image-20231203164803992.png)
 
 可以看到，该联合索引使用两个字段的值作为B+树的key值。当使用该联合索引进行查询时，先按照product_no比较，在其相等情况下再比较name字段。
 
@@ -1729,7 +1729,7 @@ select * from order where status = 1 order by create_time asc
 
 如果使用非自增主键，每次插入的索引值都是随机的，而这样就很可能插入到现有数据页中的某个位置，而要求移动其他数据来满足插入，甚至需要从一个页面复制数据到另一个页，这叫**页分裂**。**页分裂可能会造成大量内存碎片，导致索引结构不紧凑，从而影响查询效率。因此，主键尽量选择自增的字段**
 
-![image-20231206225445076](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231206225445076.png)
+![image-20231206225445076](./image/image-20231206225445076.png)
 
 主键长度也是尽量小比较好，**主键长度越小，意味着二级索引叶子节点越小，占用的空间就越小，**
 
@@ -1809,11 +1809,11 @@ select * from order where status = 1 order by create_time asc
 
 在文件头中有俩指针，分别指向前一个数据页和后一个数据页，形成双向链表。这样让数据页形成**逻辑**上的连续（在物理实际上可能不是连续的)。
 
-![image-20231208171921170](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231208171921170.png)
+![image-20231208171921170](./image/image-20231208171921170.png)
 
 **数据页中的记录按照主键顺序组成单向链表**。单向链表插入删除方便，但检索效率不高(O(n))。因此使用**页目录**起到索引作用。
 
-![image-20231208212937418](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231208212937418.png)
+![image-20231208212937418](./image/image-20231208212937418.png)
 
 页目录创建过程如下：
 
@@ -1835,7 +1835,7 @@ select * from order where status = 1 order by create_time asc
 
 在InnoDB中，B+树**每一个节点都是一个数据页：**
 
-![image-20231208214728700](C:\Users\18299\AppData\Roaming\Typora\typora-user-images\image-20231208214728700.png)
+![image-20231208214728700](./image/image-20231208214728700.png)
 
 - 只有叶子节点存放了数据，非叶子节点进用来存放目录项作为索引
 - 非叶子节点通过分层来降低每一层搜索量
@@ -1950,7 +1950,7 @@ select * from t_user where name like '%林%'
 
 可以使用索引B+树，其explain后的输出如下：
 
-![image-20231222182520027](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231222182520027.png)
+![image-20231222182520027](./image/image-20231222182520027.png)
 
 type为index说明完整扫描了二级索引name的B+树。这是因为表中只有name和id两个字段，上面的查询语句使用二级索引就可以实现**覆盖索引**了，因为查询二级索引B+树就可以获得所要的全部信息。不使用聚簇索引的原因是二级索引所含有的数据更少，遍历更快。若是表中含有其他非索引字段，就还是需要全表扫描。
 
@@ -2139,7 +2139,7 @@ count(字段)xi奥罗宾最低，如果非要使用建议建立该字段二级�
 
 但InnoDB是支持事务的，同一时刻的多个查询，由于多版本并发控制(MVCC)的原因，返回多少行记录是不确定的，因此只能遍历。
 
-![image-20231222225824964](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231222225824964.png)
+![image-20231222225824964](./image/image-20231222225824964.png)
 
 带上where后则无区别。
 
@@ -2151,7 +2151,7 @@ count(字段)xi奥罗宾最低，如果非要使用建议建立该字段二级�
 
 如果查询统计个数不需要很精确，只需要一个近似值，可以使用 show table status 或者 explain 命令来表进行估算：
 
-![image-20231222231206697](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231222231206697.png)
+![image-20231222231206697](./image/image-20231222231206697.png)
 
 #### 额外表保存计数值
 
@@ -2186,7 +2186,7 @@ MySQL支持同时处理多个事务。在同时处理多个事务的时候，就
 #### 脏读
 
 如果**一个事务读到了另一个未提交事务修改过的数据**，就出现了脏读的情况。例如：
-![image-20231225193250213](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231225193250213.png)
+![image-20231225193250213](./image/image-20231225193250213.png)
 
 由于事务A还没有提交事务，就有可能发生回滚。如上面情况事务A就发生了回滚，导致事务B读到了过期的数据，这就是脏读。
 
@@ -2196,7 +2196,7 @@ MySQL支持同时处理多个事务。在同时处理多个事务的时候，就
 
 例如，A事务先读了一个数据，然后另一个事务更改了这个数据，然后A事务又读这个数据，就发生了前后数据不一样的情况，也就是不可重复读。
 
-![image-20231225201529303](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231225201529303.png)
+![image-20231225201529303](./image/image-20231225201529303.png)
 
 #### 幻读
 
@@ -2204,7 +2204,7 @@ MySQL支持同时处理多个事务。在同时处理多个事务的时候，就
 
 例如，事务A先读了记录大于100w的记录数，有5个，事务B也读了，有5个；之后A插入了一条大于100w的记录，并提交了事务，B再查询大于100w的记录数，变成了6个，这就是幻读。
 
-![image-20231225204643817](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231225204643817.png)
+![image-20231225204643817](./image/image-20231225204643817.png)
 
 ### 事务的隔离级别
 
@@ -2239,7 +2239,7 @@ SQL提出了四种隔离级别来规避这些现象。隔离级别越高，性�
 
 举个例子：
 
-![image-20231226190128155](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231226190128155.png)
+![image-20231226190128155](./image/image-20231226190128155.png)
 
 - 读未提交：v1、v2、v3都是200w
 - 读提交：v1：100w；v2、v3都是200w
@@ -2292,7 +2292,7 @@ roll_ptr配合undo日志指向上一个旧版本
 
 每次对数据库的改动，都会记录一条undo日志，每条undo日志也都有一个roll_ptr属性（除了insert操作，因为该记录没有更早的版本），可以将这些undo日志记录都连接起来成一个链表，如图：
 
-![image-20231227204403094](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231227204403094.png)
+![image-20231227204403094](./image/image-20231227204403094.png)
 
 每次更新都会增加一条undo日志，这就是版本链，版本链的头节点是最新的记录。每个节点会保存声称该版本的事务trx_id，这会在根据Read View判断版本可见性时使用到。
 
@@ -2323,11 +2323,11 @@ Read View有四个字段：
 - max_trx_id：表示c黄健Read View时当前数据库中应该给下一个事务的id，也就是全局最大事务id+1
 - creator_trx_id：指的是创建该Read View的事务id
 
-![image-20231227230857923](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231227230857923.png)
+![image-20231227230857923](./image/image-20231227230857923.png)
 
 创建Read View后，我们可以将记录中的trx_id分为三种情况：
 
-![image-20231227232141335](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231227232141335.png)
+![image-20231227232141335](./image/image-20231227232141335.png)
 
 一个事务去访问记录时候，除了自己的更新记录总是可见，还有这样几种情况：
 
@@ -2345,7 +2345,7 @@ Read View有四个字段：
 
 假设事务A启动后，紧接着事务B启动，则两个事务创建的Read View如下：
 
-![image-20231227233740211](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231227233740211.png)
+![image-20231227233740211](./image/image-20231227233740211.png)
 
 接着，在可重复读隔离级别下，事务A和B按顺序执行以下操作：
 
@@ -2359,7 +2359,7 @@ Read View有四个字段：
 
 然后，事务A修改了该记录，但未提交。这是MySQL记录相应的undo log，形成新的版本链：
 
-![image-20231227234530961](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231227234530961.png)
+![image-20231227234530961](./image/image-20231227234530961.png)
 
 之后B第二次读取记录时，发现trx_id是51，是第三种情况。且51是在m_ids中的，那么这条记录就是未提交事务修改的，因此不能读取；B就沿着版本链向下寻找，找到第一条可以读的记录进行读取，也就是100w
 
@@ -2379,15 +2379,15 @@ B第三次读取记录时，由于从始至终Read View没有改变，因此m_id
 
 重点看每次的Read View：
 
-![image-20231228001718969](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228001718969.png)
+![image-20231228001718969](./image/image-20231228001718969.png)
 
-![image-20231228001737656](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228001737656.png)
+![image-20231228001737656](./image/image-20231228001737656.png)
 
 第一次读取不必多提。第二次读取，新创建的Read View如上，读取时查看记录时，发现其trx_id属于第三种情况，且位于m_ids中，因此这条记录版本是不可见的。所以，其会沿着版本链找到第一条可见的记录版本读取。
 
 第三次读取数据和Read View如下：
 
-![image-20231228002728179](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228002728179.png)
+![image-20231228002728179](./image/image-20231228002728179.png)
 
 在第三次读取时，由于事务A已经提交不再活跃，因此m_ids和min_trx_id都有改变。记录的trx_id是51，小于min_trx_id，因此可以读取该版本记录，也就是第三次读取为200w。
 
@@ -2424,10 +2424,10 @@ MySQL除了普通查询（select）是快照读，其余都是当前读，例如
 
 假设，表中有一个范围id为（3，5）的间隙锁，那么其他事务就无法插入id=4地记录了，这就有效防止了幻读现象。
 
-![image-20231228223045162](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228223045162.png)
+![image-20231228223045162](./image/image-20231228223045162.png)
 
 举个例子：
-![image-20231228223107632](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228223107632.png)
+![image-20231228223107632](./image/image-20231228223107632.png)
 
 事务A执行了select ... for update命令后，就对表中的记录加上了id范围为（2，+∞]的 next-key lock（next-key lock 是间隙锁+记录锁的组合）。
 
@@ -2446,7 +2446,7 @@ MySQL除了普通查询（select）是快照读，其余都是当前读，例如
 
 对于这张表
 
-![image-20231228223431844](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228223431844.png)
+![image-20231228223431844](./image/image-20231228223431844.png)
 
 事务A读取id为5的记录，此时没有记录无法查询
 
@@ -2489,7 +2489,7 @@ mysql> select * from t_stu where id = 5;
 ```
 
 时序图：
-![image-20231228223724524](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231228223724524.png)
+![image-20231228223724524](./image/image-20231228223724524.png)
 
 由于事务可以看到自己修改的数据，因此事务B插入记录后，事务A修改该记录后就可以用普通select查到该记录了，因为这个记录的trx_id变成了事务A的id。这就出现了幻读
 
@@ -2635,7 +2635,7 @@ InnoDB 存储引擎提供了个 innodb_autoinc_lock_mode 的系统变量，是�
 
 一般来说， innodb_autoinc_lock_mode = 2是性能最高的。但当搭配binlog日志格式是statement一起使用的时候，再主从复制场景会发生**数据不一致**问题。例如：
 
-![image-20231229232708186](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231229232708186.png)
+![image-20231229232708186](./image/image-20231229232708186.png)
 
 session A 往表 t 中插入了 4 行数据，然后创建了一个相同结构的表 t2，然后**两个 session 同时执行向表 t2 中插入数据**。
 
@@ -2748,7 +2748,7 @@ CREATE TABLE `user` (
 
 age是普通索引，id是主键索引，name是普通列。隔离级别是**可重复读**
 
-![image-20231230205317782](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231230205317782.png)
+![image-20231230205317782](./image/image-20231230205317782.png)
 
 ### 唯一索引等值查询
 
@@ -2778,7 +2778,7 @@ mysql> select * from user where id = 1 for update;
 
 这时，事务A就会为id=1的记录加上X记录锁，若有其他事务对这条记录进行更新或删除操作的话，会被阻塞
 
-![image-20231230225250808](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231230225250808.png)
+![image-20231230225250808](./image/image-20231230225250808.png)
 
 ##### 有什么命令可以分析加了什么锁
 
@@ -2792,7 +2792,7 @@ select * from performance_schema.data_locks\G;
 
 
 
-![image-20231230225437600](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231230225437600.png)
+![image-20231230225437600](./image/image-20231230225437600.png)
 
 可以看到，事务A加了X表级意向锁，X行级记录锁。其中LOCK_TYPE的RECORD表示行级锁，不是记录锁的意思
 
@@ -2825,7 +2825,7 @@ Empty set (0.03 sec)
 
 通过 `select * from performance_schema.data_locks\G;` 语句，我们看到
 
-![image-20231231113553634](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20231231113553634.png)
+![image-20231231113553634](./image/image-20231231113553634.png)
 
 可以看到，加了两个锁：
 
@@ -2834,7 +2834,7 @@ Empty set (0.03 sec)
 
 可以看出，**事务A在id=5的记录上加的是间隙锁，锁的范围是（1，5）**。接下来，若有其他事务要插入id为2、3、4的记录都会被阻塞，而插入id=1、5的记录会报主键冲突的错误。
 
-![image-20240101174719133](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240101174719133.png)
+![image-20240101174719133](./image/image-20240101174719133.png)
 
 ##### 如何确定间隙锁范围
 
@@ -2879,11 +2879,11 @@ mysql> select * from user where id > 15 for update;
 
 因此，事务A在主键索引上加了两个X型next-key 锁：
 
-![image-20240102233006277](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240102233006277.png)
+![image-20240102233006277](./image/image-20240102233006277.png)
 
 通过命令我们可以看到：
 
-![image-20240102235141562](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240102235141562.png)
+![image-20240102235141562](./image/image-20240102235141562.png)
 
 和我们之前的分析是一样的。此时，其他事务将不能插入id=16\~19、21\~∞的记录，不能修改id=20的记录
 
@@ -2911,7 +2911,7 @@ mysql> select * from user where id >= 15 for update;
 - 范围查找，接着往下查询。下一条记录是id=20，该记录主键索引上加一个（15，20]的next-key锁
 - 接着往下，查询到supremum pseudo-record，对该主键索引加上（20，+∞]的next-key 锁
 
-![image-20240103000004051](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103000004051.png)
+![image-20240103000004051](./image/image-20240103000004051.png)
 
 #### 小于或小于等于等于
 
@@ -2942,7 +2942,7 @@ mysql> select * from user where id < 6 for update;
 
 综上，事务A给主键索引加了三个锁：
 
-![image-20240103194757618](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103194757618.png)
+![image-20240103194757618](./image/image-20240103194757618.png)
 
 因此，针对“小于或小于等于”的唯一索引范围查询，若条件值不存在，扫描到终止范围查询的记录时，该记录索引的next-key锁退化为间隙锁，其他扫描到的记录还是next-key锁
 
@@ -2972,7 +2972,7 @@ mysql> select * from user where id <= 5 for update;
 
 事务A在主键索引上加了两个X型next-key锁：
 
-![image-20240103205820394](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103205820394.png)
+![image-20240103205820394](./image/image-20240103205820394.png)
 
 ##### 小于，查询条件存在
 
@@ -2990,7 +2990,7 @@ select * from user where id < 5 for update;
 
 事务A在主键索引上加锁如下：
 
-![image-20240103210523036](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103210523036.png)
+![image-20240103210523036](./image/image-20240103210523036.png)
 
 ### 非唯一索引等值查询
 
@@ -3020,7 +3020,7 @@ Empty set (0.00 sec)
 
 事务A在age=39的位置加入X型间隙锁，范围（22，39），意味着23~38的记录无法被插入。
 
-![image-20240103225133517](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103225133517.png)
+![image-20240103225133517](./image/image-20240103225133517.png)
 
 ##### 什么情况下，其他事务可以插入age=22或age=39的记录，什么情况下又不能
 
@@ -3038,7 +3038,7 @@ Empty set (0.00 sec)
 
 确定插入位置需要二级索引+主键，因此判断是否能插入要先判断插入位置，再看插入位置下一条记录是否有间隙锁
 
-![image-20240103230504677](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103230504677.png)
+![image-20240103230504677](./image/image-20240103230504677.png)
 
 因此，LOCK_DATA：39，20+ LOCK_MODE : X, GAP的意思是当age=39时，id小于20的记录不能插入
 
@@ -3067,7 +3067,7 @@ mysql> select * from user where age = 22 for update;
 
 于主键索引加了一个X型记录锁，二级索引加了X型next-key锁。加锁如下：
 
-![image-20240103234546435](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240103234546435.png)
+![image-20240103234546435](./image/image-20240103234546435.png)
 
 age=21和age=39的记录是否能加，还是要看主键，如上。例如，id=4的age=21记录就可以加，反之大于5的就不行，因为age=22这条记录上有间隙锁（next-key锁）
 
@@ -3102,7 +3102,7 @@ mysql> select * from user where age >= 22  for update;
 
 加的锁如下：
 
-![image-20240104000142008](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240104000142008.png)
+![image-20240104000142008](./image/image-20240104000142008.png)
 
 为何等值查询且age=22存在，不将age=22的记录二为索引退化为记录锁呢？这是因为非唯一索引不具备唯一性，其他事务还是可以插入age=22的记录，导致幻读。
 
@@ -3157,11 +3157,11 @@ CREATE TABLE `t_order` (
 ) ENGINE=InnoDB ;
 ```
 
-![image-20240105224543549](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240105224543549.png)
+![image-20240105224543549](./image/image-20240105224543549.png)
 
 假设这时，一个事务要插入1007，另一个要插入1008，且都需要在插入前判断订单是否存在，不存在才插入：
 
-![image-20240105231914596](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240105231914596.png)
+![image-20240105231914596](./image/image-20240105231914596.png)
 
 这样，两个事务都加上了(1006, +∞]的next-key锁。（Tips：理论上，非唯一索引等值查询，查询记录不存在时是加间隙锁。但这里加next-key锁而原因是1006之后没有记录了，若有记录，例如1010，就会加（1006，1010）间隙锁）。
 
@@ -3183,7 +3183,7 @@ Insert语句在执行时是不会产生锁结构的，其依靠聚簇索引记�
 
 举个例子，对于这张表，其中order_no为二级索引
 
-![image-20240106232528162](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240106232528162.png)
+![image-20240106232528162](./image/image-20240106232528162.png)
 
 然后事务A执行下面语句：
 
@@ -3209,7 +3209,7 @@ mysql> insert into t_order(order_no, create_date) values(1010,now());
 
 通过 `select * from performance_schema.data_locks\G;` 语句，来看看事务B加了什么锁：
 
-![image-20240106232722734](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240106232722734.png)
+![image-20240106232722734](./image/image-20240106232722734.png)
 
 可以看到，事务B生成了一个X型插入意向锁，所的状态为“等待”，此时事务B并没有真正获得该插入意向锁，因此事务B被阻塞。
 
@@ -3224,7 +3224,7 @@ mysql> insert into t_order(order_no, create_date) values(1010,now());
 
 对上表，id是聚簇索引，此时想插入一个id=5的记录会失败，因为已存在。试图插入的事务会加如下锁：
 
-![image-20240106234309843](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240106234309843.png)
+![image-20240106234309843](./image/image-20240106234309843.png)
 
 可以看到，id=5的记录的聚簇索引加上了S型记录锁。
 
@@ -3232,7 +3232,7 @@ mysql> insert into t_order(order_no, create_date) values(1010,now());
 
 对上表，插入order_no=1001的记录会失败，因为order_no是唯一二级索引且1001记录已存在。试图插入事务加了如下锁：
 
-![image-20240106234534247](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240106234534247.png)
+![image-20240106234534247](./image/image-20240106234534247.png)
 
 可以看到，该事务加了一个(-∞, 1001]的S型next-key锁
 
@@ -3246,16 +3246,16 @@ select * from t_order where order_no = 1001 for update;
 
 若两个事务前后执行了相同的insert语句，后执行的事务的insert语句被阻塞：
 
-![image-20240106235050115](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240106235050115.png)
+![image-20240106235050115](./image/image-20240106235050115.png)
 
 两个事务的加锁过程如下：
 
 - 事务A率先插入order_no为1006的记录，且可以插入成功。此时该唯一二级索引记录被隐式锁保护，没有具体的锁结构
 - 之后，事务B试图插入order_no为1006的记录，但由于事务A已经插入，因此事务B会遇到重复的唯一二级索引值，此时会尝试获取一个S型next-key锁，但此时事务A并没有提交。**事务A插入的order_no为1006的记录上的隐式锁会变成显示锁且锁类型为X的记录锁，所以事务B无法申请到next-key锁，阻塞。**
 
-![image-20240107000409178](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240107000409178.png)
+![image-20240107000409178](./image/image-20240107000409178.png)
 
-![image-20240107000421838](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240107000421838.png)
+![image-20240107000421838](./image/image-20240107000421838.png)
 
 因此，在第一个事务插入时，InnoDB使用隐式锁保护插入数据，不会有具体锁结构；若第一个事务未提交前，其他事务试图插入相同记录，**第一事务在该记录的隐式锁会变成显示锁，且是X型记录锁，让其他事务无法获得S型next-key锁**。其他事务会等待，直到第一个事务提交释放锁。
 
@@ -3274,7 +3274,7 @@ select * from t_order where order_no = 1001 for update;
 
 ### 一个死锁例子分析
 
-![image-20240107175542224](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240107175542224.png)
+![image-20240107175542224](./image/image-20240107175542224.png)
 
 按照时间顺序分析一下：
 
@@ -3299,7 +3299,7 @@ select * from t_order where order_no = 1001 for update;
 
 在每次事务执行过程中，都将记录版本信息记录到一个日志里。这样若是MySQL崩溃，我们就可以通过这个日志回滚到事务开始前的数据。实现这一机制就是**undo log，其保证了ACID中的原子性**。
 
-![image-20240108171340254](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240108171340254.png)
+![image-20240108171340254](./image/image-20240108171340254.png)
 
 每当InnoDB引擎对一条记录进行增删改，都需要将回滚时需要的信息记录到undo log：
 
@@ -3325,7 +3325,7 @@ MySQL数据都是存在磁盘中的。我们要更新一条记录时，需要先
 
 为此，InnoDB设计了一个缓冲池（Buffer Pool），来提升数据库读写性能
 
-![image-20240109231624095](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240109231624095.png)
+![image-20240109231624095](./image/image-20240109231624095.png)
 
 - 当读取数据时，若数据存在于Buffer Pool中，就直接从Buffer Pool中读取；没有才去读磁盘
 - 当修改数据时，若数据在Buffer Pool中，那直接修改Buffer Pool中数据所在页，然后将该页设置为“脏页”（与磁盘数据不一致）。为了减少IO，不会立刻将脏页写入磁盘，而是后续有后台线程找时机写入磁盘。
@@ -3350,7 +3350,7 @@ Buffer Pool是提升了读写性能，但内存总不可靠，若断电，重启
 
 **WAL指的是，MySQL的写操作并不是立刻写到磁盘上，而是先写日志，然后在合适的时间再写到磁盘上。**过程如下：
 
-![image-20240110130737511](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240110130737511.png)
+![image-20240110130737511](./image/image-20240110130737511.png)
 
 #### 什么是redo log
 
@@ -3371,7 +3371,7 @@ redo log是物理日志，记录了某个数据页做了什么修改，例如对
 
 **事务提交之前崩溃，重启后使用undo log回滚事务；事务提交后崩溃，重启后使用redo log恢复数据**
 
-![image-20240110180843680](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240110180843680.png)
+![image-20240110180843680](./image/image-20240110180843680.png)
 
 有了redo log，再通过WAL技术，InnoDB就能保证即使异常重启，之前已提交的记录就不会丢失。这个能力称为**crash-safe（崩溃恢复）**。**redo log保证了ACID的持久性。**
 
@@ -3390,7 +3390,7 @@ redo log是物理日志，记录了某个数据页做了什么修改，例如对
 
 产生的redo log不是第一时间就写入磁盘的，而是先写入缓存：redo log buffer，然后寻找合适的时间持久化到磁盘。redo log buffer默认大小16MB，可以通过innodb_log_Buffer_size参数调整大小。增加其可以让MySQL处理大事务时不必写入磁盘，而提升IO性能。
 
-![image-20240110214216855](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240110214216855.png)
+![image-20240110214216855](./image/image-20240110214216855.png)
 
 redo log刷盘的时机如下：
 
@@ -3416,7 +3416,7 @@ InnoDB后台线程每隔一秒：
 - 0：把缓存在redo log buffer中的redo log，调用write()写入操作系统Page Cache，然后调用fsync()持久化到磁盘。因此，**0的情况下，MySQL进程的崩溃会导致上一秒所有事务数据的丢失**
 - 2：调用fsync()持久化到磁盘。**2的情况下比1更安全，因为只有操作系统崩溃或系统断电才会丢失上一秒的事务数据，MySQL进程的崩溃则不会。**
 
-![image-20240110234559626](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240110234559626.png)
+![image-20240110234559626](./image/image-20240110234559626.png)
 
 关于三个参数的应用场景，在数据安全和写入性能上
 
@@ -3435,13 +3435,13 @@ InnoDB后台线程每隔一秒：
 
 重做日志文件组以循环写的方式工作，从头开始写，写到末尾就又回到开头，类似一个环形数组。InnoDB会先写`ib_logfile0 `，写满后切换到`ib_logfile1 `，又写满后重新切回`ib_logfile0 `。
 
-![image-20240111112857949](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240111112857949.png)
+![image-20240111112857949](./image/image-20240111112857949.png)
 
 redo log是为了防止脏页丢失设计的。那么随着系统的运行，Buffer Pool的脏页刷新到了磁盘中，对应redo log的记录也就无用了，我们就需要擦除这些记录，来腾出空间。
 
 redo log循环写类似一个环形，InnoDB用write pos表示redo log当前写到的位置，checkpoint表示要擦除的位置，如下：
 
-![image-20240111115531975](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240111115531975.png)
+![image-20240111115531975](./image/image-20240111115531975.png)
 
 - write pos和checkpoint都是顺时针移动
 - 图中红色部分，可以用来记录新的更新操作
@@ -3492,7 +3492,7 @@ binlog是记录了所有数据库表结构更改和表数据修改的日志，�
 
 MySQL主从复制依赖binlog，也就是记录MySQL所有变化并以二进制保存于磁盘。复制的过程就是将binlog数据从主库传输到从库上。这个过程一般是异步的，也就是主库上执行事务操作的线程不会等待赋值binlog的线程同步完成。
 
-![image-20240111231036848](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240111231036848.png)
+![image-20240111231036848](./image/image-20240111231036848.png)
 
 MySQL集群的主从复制过程梳理为三个阶段：
 
@@ -3508,7 +3508,7 @@ MySQL集群的主从复制过程梳理为三个阶段：
 
 完成主从复制后，可以写数据时只写主库，读数据只读从库，这样即使写请求锁表锁记录，也不影响读请求执行
 
-![image-20240111232400027](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240111232400027.png)
+![image-20240111232400027](./image/image-20240111232400027.png)
 
 从库也不是越多越好。因为**从库数据量增加，从库连接上来的IO线程也比较多，因此主库也要创建同样多的log dump线程处理复制请求，对主库资源消耗高，也受限于主库带宽**。事实上，**一般一个主库跟2~3从库（1主2从1备主=一套数据库）**
 
@@ -3525,7 +3525,7 @@ MySQL集群的主从复制过程梳理为三个阶段：
 MySQL给每个线程分配了一片内存用于缓存binlog，叫binlog cache，大小由参数binlog_cache_size控制。若超出了这个参数规定的大小，就要暂存到磁盘。
 
 从binlog cache写到binlog的时机是事务提交时，此时执行器把binlog cache里的完整事务写入binlog文件，并清空binlog cache：
-![image-20240112161833034](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240112161833034.png)
+![image-20240112161833034](./image/image-20240112161833034.png)
 
 虽然每个线程有自己的binlog cache，但最终都写到一个binlog文件
 
@@ -3573,7 +3573,7 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 在开启binlog情况下，MySQL为了保证binlog和redo log一致，会使用**内部XA事务**，内部XA事务由bilog作为协调者，存储引擎是参与者。当客户端执行commit语句或事务自动提交情况下，MySQL内部开启一个XA事务，分**两阶段完成XA事务提交**，如下：
 
-![image-20240112233805806](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240112233805806.png)
+![image-20240112233805806](./image/image-20240112233805806.png)
 
 可以看出，事务提交的两个阶段，就是将**redo log的写入拆成俩步骤：Prepare和Commit，中间再穿插写入binlog**：
 
@@ -3584,7 +3584,7 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 时刻A和时刻B都有可能发生崩溃
 
-![image-20240112234928088](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240112234928088.png)
+![image-20240112234928088](./image/image-20240112234928088.png)
 
 不管是时刻A还是B，**此时redo log都处于Prepare状态**。在MySQL重启后会按顺序扫描redo log文件，碰到处于Prepare状态的redo log，就拿着redo log里记录的XID去binlog看看有没有：
 
@@ -3622,7 +3622,7 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 **每一个阶段都有一个队列，**每个阶段都有所保护，保证了事务写入的顺序。第一个进入队列的事务成为leader，领导所在队列所有事务，全权负责整队操作，完成后通知对内其他事务操作结束。
 
-![image-20240113001742082](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113001742082.png)
+![image-20240113001742082](./image/image-20240113001742082.png)
 
 每个阶段引入队列后，锁就只需保护每个队列，而不再锁住整个事务提交过程。**锁粒度减小，这样就使得多个阶段可以并发执行，提高效率**
 
@@ -3636,14 +3636,14 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 第一个事务会成为flush阶段的leader，其他后来的事务都是follower
 
-![image-20240113002631531](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113002631531.png)
+![image-20240113002631531](./image/image-20240113002631531.png)
 
 接着，获取队列中的事务组，有绿色事务组的leader对redo log进行一次write+fsync，即将同组事务的redo log刷盘：
-![image-20240113002415452](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113002415452.png)
+![image-20240113002415452](./image/image-20240113002415452.png)
 
 完成Prepare阶段后，将绿色这一组事务执行过程中产生的binlog写入binlog文件（调用write，不刷盘，缓存于Page Cache中）
 
-![image-20240113002517404](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113002517404.png)
+![image-20240113002517404](./image/image-20240113002517404.png)
 
 不难看出，flush队列的作用是**支撑redo log的组提交**
 
@@ -3653,11 +3653,11 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 绿色这组binlog写入binlog文件后，不会立刻刷盘，而是等待一段时间，这个时间由参数Binlog_group_commit_sync_delay（单位微秒）控制。**目的是为了组合更多事务的binlog，再一起刷盘**
 
-![image-20240113002856364](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113002856364.png)
+![image-20240113002856364](./image/image-20240113002856364.png)
 
 若在等待过程中，事务的数量提前达到了参数Binlog_group_commit_sync_no_delay_count的设置，那就不会等待，立刻将binlog刷盘
 
-![image-20240113002955468](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113002955468.png)
+![image-20240113002955468](./image/image-20240113002955468.png)
 
 可以看出，sync阶段队列的作用是用于**支持binlog的组提交**
 
@@ -3665,7 +3665,7 @@ MySQL使用sync_binlog参数来控制数据库binlog刷盘频率：
 
 最后commit阶段，调用引擎提交事务接口，将redo log状态设置为commit
 
-![image-20240113003200229](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113003200229.png)
+![image-20240113003200229](./image/image-20240113003200229.png)
 
 commit阶段队列的作用是承接sync阶段事务，保证按顺序完成最后引擎提交，也使得sync能尽早处理下一组事务，最大化组提交效率。
 
@@ -3704,7 +3704,7 @@ commit阶段队列的作用是承接sync阶段事务，保证按顺序完成最�
 - 读取数据时，若数据存在Buffer Pool中，就不用再去磁盘读取
 - 修改数据时，若数据存在Buffer Pool中，就更新Buffer Pool的数据所在页，使其变为脏页，等待后续后台线程刷盘
 
-![image-20240113180541946](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113180541946.png)
+![image-20240113180541946](./image/image-20240113180541946.png)
 
 ### Buffer Pool大小
 
@@ -3719,7 +3719,7 @@ commit阶段队列的作用是承接sync阶段事务，保证按顺序完成最�
 Buffer Pool中缓存有数据页、索引页、undo页、插入缓存页、自适应哈希索引、锁信息等
 
 为了更好地管理这些缓存页，InnoDB为每个缓存页都创建了一个控制块，控制块信息包括：缓存页的表空间、页号、缓存页地址、链表节点等。控制块放置在Buffer Pool的最前面，接着才是缓存页：
-![image-20240113200307611](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113200307611.png)
+![image-20240113200307611](./image/image-20240113200307611.png)
 
 控制块和缓存页之间的灰色部分称为碎片空间。这是由于分配足够多的控制块和缓存页后，剩余的空间不足以一对控制块和缓存页大小，自然就被剩下了。
 
@@ -3729,7 +3729,7 @@ Buffer Pool中缓存有数据页、索引页、undo页、插入缓存页、自�
 
 Buffer Pool是一片连续的内存空间。当MySQL运行一段时间后，自然这片连续内存空间内既有空闲的也有被使用的。当我们想从磁盘读取数据到Buffer Pool时，我们需要立刻知道空闲页的位置，来加快效率。InnoDB使用空闲缓存页的控制块作为链表的节点，构建了Free链表（空闲链表）：
 
-![image-20240113202209756](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113202209756.png)
+![image-20240113202209756](./image/image-20240113202209756.png)
 
 空闲链表上除了有控制块，还有一个头节点，该头节点包含链表头节点地址、尾节点地址以及当前链表中节点的数量等信息。空闲链表每一个节点都是一个控制块，连接着一个空闲页，就是说该空闲链表每一个节点都对应一个空闲页
 
@@ -3739,7 +3739,7 @@ Buffer Pool是一片连续的内存空间。当MySQL运行一段时间后，自�
 
 为了能快速知道哪些缓存页是脏页，就设计使用**Flush链表**。它和Free链表类似，只不过节点都是脏页的控制块
 
-![image-20240113203440785](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113203440785.png)
+![image-20240113203440785](./image/image-20240113203440785.png)
 
 使用Flush链表，后台就能通过遍历这个链表来讲脏页写入磁盘
 
@@ -3749,7 +3749,7 @@ Buffer Pool是一片连续的内存空间。当MySQL运行一段时间后，自�
 
 这样我们可以知道，Buffer Pool中有三种页和链表（Free链表、Flush链表、LRU）来管理数据：
 
-![image-20240113204645678](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113204645678.png)
+![image-20240113204645678](./image/image-20240113204645678.png)
 
 但简单的LRU并没有被MySQL使用，因为其无法避免以下两个问题：
 
@@ -3770,7 +3770,7 @@ MySQL改进了LRU算法，将LRU划分了两个区域：old区域和young区域
 
 young区域在LRU链表前半部分，old区域则在后半部分：
 
-![image-20240113211645487](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113211645487.png)
+![image-20240113211645487](./image/image-20240113211645487.png)
 
 old区域占LRU链表长度比例由参数innodb_old_blocks_pct控制，默认为37，也就是young：old=63：37
 
@@ -3794,7 +3794,7 @@ select * from t_user where name like "%xiaolin%";
 - 往复
 
 这样，由于全表扫描数据量很大，原本young区域的热点数据可能被淘汰，例如：
-![image-20240113213350074](C:/Users/18299/AppData/Roaming/Typora/typora-user-images/image-20240113213350074.png)
+![image-20240113213350074](./image/image-20240113213350074.png)
 
 可以看到，young区域的6、7都被淘汰了。这就是Buffer Pool污染
 
